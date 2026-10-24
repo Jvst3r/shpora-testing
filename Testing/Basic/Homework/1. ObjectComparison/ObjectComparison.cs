@@ -1,12 +1,13 @@
 ﻿using NUnit.Framework;
 using NUnit.Framework.Legacy;
+using FluentAssertions;
 
 namespace HomeExercise.Tasks.ObjectComparison;
 public class ObjectComparison
 {
     [Test]
     [Description("Проверка текущего царя")]
-    [Category("ToRefactor")]
+    [Category("Refactored")]
     public void CheckCurrentTsar()
     {
         var actualTsar = TsarRegistry.GetCurrentTsar();
@@ -15,6 +16,13 @@ public class ObjectComparison
             new Person("Vasili III of Russia", 28, 170, 60, null));
 
         // Перепишите код на использование Fluent Assertions.
+        //стало
+        actualTsar.Should().BeEquivalentTo(expectedTsar,
+            opt => opt.Excluding(p => p.Id)         //тест не будет проходить, если сравнивать Id, тк он задается в конструкторе автоматически
+                      .Excluding(p => p.Parent.Id)); //поэтому я исключил эти два поля из сравнения
+
+        //было (не знаю надо ли удалять)
+        /**
         ClassicAssert.AreEqual(actualTsar.Name, expectedTsar.Name);
         ClassicAssert.AreEqual(actualTsar.Age, expectedTsar.Age);
         ClassicAssert.AreEqual(actualTsar.Height, expectedTsar.Height);
@@ -24,6 +32,7 @@ public class ObjectComparison
         ClassicAssert.AreEqual(expectedTsar.Parent.Age, actualTsar.Parent.Age);
         ClassicAssert.AreEqual(expectedTsar.Parent.Height, actualTsar.Parent.Height);
         ClassicAssert.AreEqual(expectedTsar.Parent.Parent, actualTsar.Parent.Parent);
+        **/
     }
 
     [Test]
@@ -35,6 +44,11 @@ public class ObjectComparison
             new Person("Vasili III of Russia", 28, 170, 60, null));
 
         // Какие недостатки у такого подхода? 
+        //Ответ: сложно читается,
+        //при изменении модели нужно будет переписывать AreEquel,
+        //чтобы он проверял новое свойство, или не проверял то, которое мы убрали из модели.
+        //Также, если тест не пройдет, нужно открывать дебагер, чтобы узнать, из-за какого свойства упал тест
+
         ClassicAssert.True(AreEqual(actualTsar, expectedTsar));
     }
 
