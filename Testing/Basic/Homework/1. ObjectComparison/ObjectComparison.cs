@@ -16,23 +16,9 @@ public class ObjectComparison
             new Person("Vasili III of Russia", 28, 170, 60, null));
 
         // Перепишите код на использование Fluent Assertions.
-        //стало
         actualTsar.Should().BeEquivalentTo(expectedTsar,
-            opt => opt.Excluding(p => p.Id)         //тест не будет проходить, если сравнивать Id, тк он задается в конструкторе автоматически
-                      .Excluding(p => p.Parent.Id)); //поэтому я исключил эти два поля из сравнения
-
-        //было (не знаю надо ли удалять)
-        /**
-        ClassicAssert.AreEqual(actualTsar.Name, expectedTsar.Name);
-        ClassicAssert.AreEqual(actualTsar.Age, expectedTsar.Age);
-        ClassicAssert.AreEqual(actualTsar.Height, expectedTsar.Height);
-        ClassicAssert.AreEqual(actualTsar.Weight, expectedTsar.Weight);
-
-        ClassicAssert.AreEqual(expectedTsar.Parent!.Name, actualTsar.Parent!.Name);
-        ClassicAssert.AreEqual(expectedTsar.Parent.Age, actualTsar.Parent.Age);
-        ClassicAssert.AreEqual(expectedTsar.Parent.Height, actualTsar.Parent.Height);
-        ClassicAssert.AreEqual(expectedTsar.Parent.Parent, actualTsar.Parent.Parent);
-        **/
+            opt => opt.Excluding(p => p.Id)
+                      .Excluding(p => p.Parent.Id)); 
     }
 
     [Test]
@@ -44,7 +30,7 @@ public class ObjectComparison
             new Person("Vasili III of Russia", 28, 170, 60, null));
 
         // Какие недостатки у такого подхода? 
-        //Ответ: сложно читается,
+        //Ответ:
         //при изменении модели нужно будет переписывать AreEquel,
         //чтобы он проверял новое свойство, или не проверял то, которое мы убрали из модели.
         //Также, если тест не пройдет, нужно открывать дебагер, чтобы узнать, из-за какого свойства упал тест
